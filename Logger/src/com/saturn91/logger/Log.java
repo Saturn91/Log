@@ -142,9 +142,7 @@ public abstract class Log {
 	}
 	
 	public static void printLogFile(String path) {
-		System.out.println(getDate());
 		String dateString = getDate().replace(".", "_").replace("-", "_").replace(":", "_");
-		System.out.println(dateString);
 		try(  PrintWriter out = new PrintWriter(dateString+"_"+path)  ){
 		    out.println(getDebugStrings().toString());
 		} catch (FileNotFoundException e) {
