@@ -13,10 +13,12 @@ public class Test {
 		System.out.println("----/test recording: ----");
 		System.out.println("----test recording: ----");
 		System.out.println(Log.getLastMessages());
-		System.out.print("----/test recording: ----");
+		System.out.println("----/test recording: ----");
 		
 		String text = Log.getDebugStrings().toString();
 		System.out.println("File: \n" + text);
+		
+		Log.printLogFile("test.txt");
 		
 	}
 }

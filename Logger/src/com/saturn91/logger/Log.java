@@ -1,5 +1,7 @@
 package com.saturn91.logger;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -109,7 +111,6 @@ public abstract class Log {
 	public static StringBuilder getDebugStrings(){
 		StringBuilder sb2 = new StringBuilder();
 		sb2.append(sb.toString());
-		sb.setLength(0);
 		return sb2;
 	}
 
@@ -138,5 +139,17 @@ public abstract class Log {
 		String lastmsg = lastMessages.toString();
 		lastMessages.setLength(0);
 		return lastmsg;
+	}
+	
+	public static void printLogFile(String path) {
+		System.out.println(getDate());
+		String dateString = getDate().replace(".", "_").replace("-", "_").replace(":", "_");
+		System.out.println(dateString);
+		try(  PrintWriter out = new PrintWriter(dateString+"_"+path)  ){
+		    out.println(getDebugStrings().toString());
+		} catch (FileNotFoundException e) {
+			Log.printErrorLn("not able to save File!", Log.class.getName(), 1);
+			e.printStackTrace();
+		}
 	}
 }
