@@ -14,7 +14,7 @@ import java.util.Date;
  * 5. Status informations Detail 2
  * @author M.Geissbberger
  */
-public class Log {
+public abstract class Log {
 	private static int debugMode;
 	private static int allClassesDebugMode = -1;		//-1 means use normal debug mode
 	private final static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY-hh:mm:ss");
@@ -22,6 +22,7 @@ public class Log {
 	private final static String error ="[ERROR]";
 
 	private static StringBuilder sb = new StringBuilder();
+	private static StringBuilder lastMessages = new StringBuilder();
 
 	private static boolean printOnlyExact_DebugMode = false;
 
@@ -37,17 +38,20 @@ public class Log {
 				if(debugMode == _debugMode){
 					System.out.println(_debugMode + "| "+ msgLine);
 					sb.append(_debugMode + "| "+msgLine + "\n");
+					lastMessages.append(_debugMode + "| "+msgLine + "\n");
 				}
 			}else{
 				if(debugMode >= _debugMode){
 					System.out.println(_debugMode + "| "+msgLine);
 					sb.append(_debugMode + "| "+msgLine + "\n");
+					lastMessages.append(_debugMode + "| "+msgLine + "\n");
 				}
 			}
 		}else{
 			if(allClassesDebugMode >= _debugMode){
 				System.out.println(_debugMode + "| "+msgLine);
 				sb.append(_debugMode + "| "+msgLine + "\n");
+				lastMessages.append(_debugMode + "| "+msgLine + "\n");
 			}
 		}
 	}
@@ -57,24 +61,27 @@ public class Log {
 	 * @param msg	Status Message
 	 * @param debugMode
 	 */
-	public static void printErrorLn(String msg, String className, int _debugMod){
+	public static void printErrorLn(String msg, String className, int _debugMode){
 		String msgLine = "[" + getDate() + "]: " + error + " " + className + ": " + msg;
 		if(allClassesDebugMode == -1){
 			if(printOnlyExact_DebugMode){
-				if(debugMode == _debugMod){
-					System.err.println(_debugMod + "| "+msgLine);
-					sb.append(_debugMod + "| "+msgLine + "\n");
+				if(debugMode == _debugMode){
+					System.err.println(_debugMode + "| "+msgLine);
+					sb.append(_debugMode + "| "+msgLine + "\n");
+					lastMessages.append(_debugMode + "| "+msgLine + "\n");
 				}
 			}else{
-				if(debugMode >= _debugMod){
-					System.err.println(_debugMod + "| "+msgLine);
-					sb.append(_debugMod + "| "+msgLine + "\n");
+				if(debugMode >= _debugMode){
+					System.err.println(_debugMode + "| "+msgLine);
+					sb.append(_debugMode + "| "+msgLine + "\n");
+					lastMessages.append(_debugMode + "| "+msgLine + "\n");
 				}
 			}
 		}else{
-			if(allClassesDebugMode >= _debugMod){
-				System.err.println(_debugMod + "| "+msgLine);
-				sb.append(_debugMod + "| "+msgLine + "\n");
+			if(allClassesDebugMode >= _debugMode){
+				System.err.println(_debugMode + "| "+msgLine);
+				sb.append(_debugMode + "| "+msgLine + "\n");
+				lastMessages.append(_debugMode + "| "+msgLine + "\n");
 			}
 		}
 	}
@@ -83,8 +90,8 @@ public class Log {
 	 * Change the debug Mod so that other deeper or less deep msg gets trough
 	 * @param debugMode
 	 */
-	public static void setDebugMode(int _debugMod){
-		debugMode = _debugMod;
+	public static void setDebugMode(int _debugMode){
+		debugMode = _debugMode;
 	}
 
 	/**
@@ -125,5 +132,11 @@ public class Log {
 		}else{
 			return allClassesDebugMode;
 		}
+	}
+	
+	public static String getLastMessages() {
+		String lastmsg = lastMessages.toString();
+		lastMessages.setLength(0);
+		return lastmsg;
 	}
 }
