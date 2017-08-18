@@ -3,9 +3,9 @@ package com.saturn91.logger;
 public class Test {
 
 	public static void main(String[] args) {
-		Log.setDebugMode(10);
+		Log.setDebugMode(2);
 		for(int i = 0; i < 10; i++) {
-			Log.printLn("text"+i, Test.class.getName(), 1);
+			Log.printLn("text"+i, Test.class.getName(), i);
 		}
 		
 		System.out.println("----test recording: ----");

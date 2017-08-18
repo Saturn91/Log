@@ -19,6 +19,7 @@ import java.util.Date;
 public abstract class Log {
 	private static int debugMode;
 	private static int allClassesDebugMode = -1;		//-1 means use normal debug mode
+	private static int debugModelogFile = 10;
 	private final static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY-hh:mm:ss");
 	private final static String info = " [INFO]";
 	private final static String error ="[ERROR]";
@@ -35,24 +36,24 @@ public abstract class Log {
 	 */
 	public static void printLn(String msg, String className, int _debugMode){
 		String msgLine = "[" + getDate() + "]: " + info + " " + className + ": " + msg;
+		if(debugMode <= debugModelogFile) {
+			sb.append(_debugMode + "| "+msgLine + "\n");
+		}
 		if(allClassesDebugMode == -1){
 			if(printOnlyExact_DebugMode){
 				if(debugMode == _debugMode){
 					System.out.println(_debugMode + "| "+ msgLine);
-					sb.append(_debugMode + "| "+msgLine + "\n");
 					lastMessages.append(_debugMode + "| "+msgLine + "\n");
 				}
 			}else{
 				if(debugMode >= _debugMode){
 					System.out.println(_debugMode + "| "+msgLine);
-					sb.append(_debugMode + "| "+msgLine + "\n");
 					lastMessages.append(_debugMode + "| "+msgLine + "\n");
 				}
 			}
 		}else{
 			if(allClassesDebugMode >= _debugMode){
 				System.out.println(_debugMode + "| "+msgLine);
-				sb.append(_debugMode + "| "+msgLine + "\n");
 				lastMessages.append(_debugMode + "| "+msgLine + "\n");
 			}
 		}
@@ -65,24 +66,24 @@ public abstract class Log {
 	 */
 	public static void printErrorLn(String msg, String className, int _debugMode){
 		String msgLine = "[" + getDate() + "]: " + error + " " + className + ": " + msg;
+		if(debugMode <= debugModelogFile) {
+			sb.append(_debugMode + "| "+msgLine + "\n");
+		}
 		if(allClassesDebugMode == -1){
 			if(printOnlyExact_DebugMode){
 				if(debugMode == _debugMode){
 					System.err.println(_debugMode + "| "+msgLine);
-					sb.append(_debugMode + "| "+msgLine + "\n");
 					lastMessages.append(_debugMode + "| "+msgLine + "\n");
 				}
 			}else{
 				if(debugMode >= _debugMode){
 					System.err.println(_debugMode + "| "+msgLine);
-					sb.append(_debugMode + "| "+msgLine + "\n");
 					lastMessages.append(_debugMode + "| "+msgLine + "\n");
 				}
 			}
 		}else{
 			if(allClassesDebugMode >= _debugMode){
 				System.err.println(_debugMode + "| "+msgLine);
-				sb.append(_debugMode + "| "+msgLine + "\n");
 				lastMessages.append(_debugMode + "| "+msgLine + "\n");
 			}
 		}
@@ -133,6 +134,10 @@ public abstract class Log {
 		}else{
 			return allClassesDebugMode;
 		}
+	}
+	
+	public static void setLogFileDebugModus(int debugmodus) {
+		debugModelogFile = debugmodus;
 	}
 	
 	public static String getLastMessages() {
