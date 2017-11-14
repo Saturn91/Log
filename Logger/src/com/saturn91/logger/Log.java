@@ -146,12 +146,32 @@ public abstract class Log {
 		return lastmsg;
 	}
 	
+	/**
+	 * Add a direction i.e. "../LogFiles/" to the path 
+	 * printLogFile(LogFiles/, Log.txt); creates a Date_Log.txt in the given directory (from program)
+	 * @param dir
+	 * @param path
+	 */
+	public static void printLogFile(String dir, String path) {
+		String dateString = getDate().replace(".", "_").replace("-", "_").replace(":", "_");
+		try(  PrintWriter out = new PrintWriter(dir + dateString+"_"+path)  ){
+		    out.println(getDebugStrings().toString());
+		} catch (FileNotFoundException e) {
+			Log.printErrorLn("not able to save File!" + dir + dateString+"_"+path, Log.class.getName(), 1);
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * printLogFile(Log.txt); creates a Date_Log.txt in the folder where the program runs
+	 * @param path
+	 */
 	public static void printLogFile(String path) {
 		String dateString = getDate().replace(".", "_").replace("-", "_").replace(":", "_");
 		try(  PrintWriter out = new PrintWriter(dateString+"_"+path)  ){
 		    out.println(getDebugStrings().toString());
 		} catch (FileNotFoundException e) {
-			Log.printErrorLn("not able to save File!", Log.class.getName(), 1);
+			Log.printErrorLn("not able to save File!" + dateString+"_"+path, Log.class.getName(), 1);
 			e.printStackTrace();
 		}
 	}
