@@ -21,6 +21,7 @@ public abstract class Log {
 	private static int allClassesDebugMode = -1;		//-1 means use normal debug mode
 	private static int debugModelogFile = 10;
 	private final static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY-hh:mm:ss");
+	private final static SimpleDateFormat dayMonthYearFormat = new SimpleDateFormat("dd.MM.YYYY");
 	private final static String info = " [INFO]";
 	private final static String error ="[ERROR]";
 
@@ -35,7 +36,7 @@ public abstract class Log {
 	 * @param debugMode
 	 */
 	public static void printLn(String msg, String className, int _debugMode){
-		String msgLine = "[" + getDate() + "]: " + info + " " + className + ": " + msg;
+		String msgLine = "[" + getDetailedDate() + "]: " + info + " " + className + ": " + msg;
 		if(debugMode <= debugModelogFile) {
 			sb.append(_debugMode + "| "+msgLine + "\n");
 		}
@@ -65,7 +66,7 @@ public abstract class Log {
 	 * @param debugMode
 	 */
 	public static void printErrorLn(String msg, String className, int _debugMode){
-		String msgLine = "[" + getDate() + "]: " + error + " " + className + ": " + msg;
+		String msgLine = "[" + getDetailedDate() + "]: " + error + " " + className + ": " + msg;
 		if(debugMode <= debugModelogFile) {
 			sb.append(_debugMode + "| "+msgLine + "\n");
 		}
@@ -123,9 +124,14 @@ public abstract class Log {
 		allClassesDebugMode = debugmode;
 	}
 
-	private static String getDate(){
+	public static String getDetailedDate(){
 		Date date = new Date(System.currentTimeMillis());
 		return dateFormat.format(date).toString();
+	}
+	
+	public static String getDayMonthYear() {
+		Date date = new Date(System.currentTimeMillis());
+		return dayMonthYearFormat.format(date);
 	}
 
 	public static int getDebugMode(){
@@ -153,7 +159,7 @@ public abstract class Log {
 	 * @param path
 	 */
 	public static void printLogFile(String dir, String path) {
-		String dateString = getDate().replace(".", "_").replace("-", "_").replace(":", "_");
+		String dateString = getDetailedDate().replace(".", "_").replace("-", "_").replace(":", "_");
 		try(  PrintWriter out = new PrintWriter(dir + dateString+"_"+path)  ){
 		    out.println(getDebugStrings().toString());
 		} catch (FileNotFoundException e) {
@@ -167,7 +173,7 @@ public abstract class Log {
 	 * @param path
 	 */
 	public static void printLogFile(String path) {
-		String dateString = getDate().replace(".", "_").replace("-", "_").replace(":", "_");
+		String dateString = getDetailedDate().replace(".", "_").replace("-", "_").replace(":", "_");
 		try(  PrintWriter out = new PrintWriter(dateString+"_"+path)  ){
 		    out.println(getDebugStrings().toString());
 		} catch (FileNotFoundException e) {
