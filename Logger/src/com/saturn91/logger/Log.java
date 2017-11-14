@@ -20,7 +20,7 @@ public abstract class Log {
 	private static int debugMode;
 	private static int allClassesDebugMode = -1;		//-1 means use normal debug mode
 	private static int debugModelogFile = 10;
-	private final static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY-hh:mm:ss");
+	private final static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY-HH:mm:ss");
 	private final static SimpleDateFormat dayMonthYearFormat = new SimpleDateFormat("dd.MM.YYYY");
 	private final static String info = " [INFO]";
 	private final static String error ="[ERROR]";
