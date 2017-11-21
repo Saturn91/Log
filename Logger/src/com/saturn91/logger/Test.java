@@ -4,6 +4,7 @@ public class Test {
 
 	public static void main(String[] args) {
 		Log.setDebugMode(2);
+		
 		for(int i = 0; i < 10; i++) {
 			Log.printLn("text"+i, Test.class.getName(), i);
 		}
