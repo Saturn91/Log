@@ -29,6 +29,13 @@ public abstract class Log {
 	private static StringBuilder lastMessages = new StringBuilder();
 
 	private static boolean printOnlyExact_DebugMode = false;
+	
+	private static boolean dontWasteDataSpace = false;
+	private static final int maxLogLinesIfDontWasteDataSpace = 1000;
+	private static String[] logLinesBuffer = new String[maxLogLinesIfDontWasteDataSpace];
+	private static int logLinesCounter = 0;
+	private static int logLinesCursor = 0;
+	private static boolean loglinesOverFlow = false;		//gets true if the Array "logLinesBuffer" got filled once!
 
 	/**
 	 * Print the msg message on the debugMod Layer
@@ -38,7 +45,7 @@ public abstract class Log {
 	public static void printLn(String msg, String className, int _debugMode){
 		String msgLine = "[" + getDetailedDate() + "]: " + info + " " + className + ": " + msg;
 		if(debugMode <= debugModelogFile) {
-			sb.append(_debugMode + "| "+msgLine + "\n");
+			appendToLogFile(_debugMode + "| "+msgLine + "\n");
 		}
 		if(allClassesDebugMode == -1){
 			if(printOnlyExact_DebugMode){
@@ -68,7 +75,7 @@ public abstract class Log {
 	public static void printErrorLn(String msg, String className, int _debugMode){
 		String msgLine = "[" + getDetailedDate() + "]: " + error + " " + className + ": " + msg;
 		if(debugMode <= debugModelogFile) {
-			sb.append(_debugMode + "| "+msgLine + "\n");
+			appendToLogFile(_debugMode + "| "+msgLine + "\n");
 		}
 		if(allClassesDebugMode == -1){
 			if(printOnlyExact_DebugMode){
@@ -88,6 +95,15 @@ public abstract class Log {
 				lastMessages.append(_debugMode + "| "+msgLine + "\n");
 			}
 		}
+	}
+	
+	public static void setDontWasteDataSpace(boolean _dontWasteDataSpace) {
+		if(_dontWasteDataSpace) {
+			Log.printLn("Only a reduced Logfile gets saved!", Log.class.getSimpleName(), 1);
+		}else {
+			Log.printLn("The full logFile gets saved!", Log.class.getSimpleName(), 1);
+		}
+		dontWasteDataSpace = _dontWasteDataSpace;
 	}
 
 	/**
@@ -112,7 +128,7 @@ public abstract class Log {
 	 */
 	public static StringBuilder getDebugStrings(){
 		StringBuilder sb2 = new StringBuilder();
-		sb2.append(sb.toString());
+		sb2.append(getLogLines());
 		return sb2;
 	}
 
@@ -152,7 +168,55 @@ public abstract class Log {
 		return lastmsg;
 	}
 	
-	/**
+	private static void appendToLogFile(String msg) {
+		if(dontWasteDataSpace && logLinesCounter < maxLogLinesIfDontWasteDataSpace) {
+			logLinesCounter ++;
+		}
+		
+		//loglinesCounter is only >= maxLogLinesIfDontWasteDataSpace if dontWasteDataSpace = true!
+		if(logLinesCounter < maxLogLinesIfDontWasteDataSpace) {
+			sb.append(msg);
+		}else {
+			logLinesBuffer[logLinesCursor] = msg;
+			if(logLinesCursor + 1 < maxLogLinesIfDontWasteDataSpace) {
+				logLinesCursor++;
+			}else {
+				logLinesCursor = 0;
+				loglinesOverFlow = true;
+			}			
+		}		
+	}
+	
+	private static String getLogLines() {
+		String output = "No Data saved!";
+		//logLinesCounter doesn't get > than maxLogLinesIfDontWasteDataSpace if dontWasteDataSpace = false;
+		if(logLinesCounter < maxLogLinesIfDontWasteDataSpace) {
+			output =  sb.toString();
+		}else {
+			output = sb.toString();
+			output += "[...]\n";
+			if(!loglinesOverFlow) {
+				for(int i = 0; i < logLinesCursor; i++) {
+					output += logLinesBuffer[i];
+				}
+			}else {
+				for(int i = 0; i < maxLogLinesIfDontWasteDataSpace; i++) {
+					if(i < maxLogLinesIfDontWasteDataSpace - logLinesCursor) {
+						output += logLinesBuffer[i+logLinesCursor];
+					}else {						//0-989 oben, sonst (990 - 999) unten
+												//i = 990 -> index = 0
+												//i = 991 -> index = 1
+												//i = 992 -> index = 2
+												//i = 993 -> index = 3
+						output += logLinesBuffer[i-(maxLogLinesIfDontWasteDataSpace - logLinesCursor)];
+					}					
+				}
+			}
+		}
+		return output;
+	}
+	
+	/** 
 	 * Add a direction i.e. "../LogFiles/" to the path 
 	 * printLogFile(LogFiles/, Log.txt); creates a Date_Log.txt in the given directory (from program)
 	 * @param dir
